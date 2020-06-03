@@ -1,0 +1,3 @@
+in vec3 vToCameraVector;
+uniform float fShineDamper;
+uniform float fReflectivity;

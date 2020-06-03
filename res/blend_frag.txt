@@ -1,0 +1,16 @@
+vec4 blendMapColor = texture(blendMap, vTexCoordsFrag);
+
+float backTextureAmount = 1 - (blendMapColor.r + 
+    blendMapColor.g + blendMapColor.b);
+vec2 tiledCoords = vTexCoordsFrag * 50.0;
+vec4 backgroundTextureColor = texture(backgroundTexture, 
+    tiledCoords) * backTextureAmount;
+vec4 rTextureColor = texture(rColor, tiledCoords) * 
+    blendMapColor.r;
+vec4 gTextureColor = texture(gColor, tiledCoords) * 
+    blendMapColor.g;
+vec4 bTextureColor = texture(bColor, tiledCoords) * 
+    blendMapColor.b;
+
+vec4 totalColor = backgroundTextureColor + 
+    rTextureColor + gTextureColor + bTextureColor;

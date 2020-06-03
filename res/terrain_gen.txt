@@ -1,0 +1,72 @@
+RawModel Terrain::generateTerrain(Loader p_loader, 
+    const char * p_heightMapFilename)
+{
+	stb::image image(p_heightMapFilename);
+
+	const int _VERTEX_COUNT = image.height();
+	_heights.resize(_VERTEX_COUNT, 
+        std::vector<float>(_VERTEX_COUNT));
+
+	const int count = _VERTEX_COUNT * _VERTEX_COUNT;
+	std::vector<float> vertices;
+	std::vector<float> normals;
+	std::vector<float> textureCoords;
+	std::vector<unsigned int> indices;
+
+	vertices.resize(count * 3);
+	normals.resize(count * 3);
+	textureCoords.resize(count * 2);
+	indices.resize(6 * (_VERTEX_COUNT - 1) * 
+        (_VERTEX_COUNT - 1));
+
+	int vertexPointer = 0;
+	for (int i = 0; i < _VERTEX_COUNT; i++) 
+	{
+		for (int j = 0; j < _VERTEX_COUNT; j++)
+		{
+    		vertices[vertexPointer * 3] = 
+                (float)j / 
+                ((float)_VERTEX_COUNT - 1) 
+                * _SIZE;
+    		float height = getHeight(j, i, 
+                image);
+    		_heights[j][i] = height;
+    		vertices[vertexPointer * 3 + 1]= 
+                height;
+    		vertices[vertexPointer * 3 + 2]= 
+                (float)i / 
+                ((float)_VERTEX_COUNT - 1) * 
+                _SIZE;
+    		glm::fvec3 normal = 
+                calculateNormal(j, i, image);
+    		normals[vertexPointer * 3] = 
+                normal.x;
+    		normals[vertexPointer * 3 + 1] = 
+                normal.y;
+    		normals[vertexPointer * 3 + 2] = 
+                normal.z;
+    		textureCoords[vertexPointer * 2]= 
+                (float)j / ((float)_VERTEX_COUNT - 1);
+    		textureCoords[vertexPointer * 2 + 1] = (float)i / ((float)_VERTEX_COUNT - 1);
+    		vertexPointer++;
+		}
+	}
+	int pointer = 0;
+	for (int gz = 0; gz < _VERTEX_COUNT - 1; gz++) 
+	{
+		for (int gx = 0; gx < _VERTEX_COUNT - 1; gx++) 
+		{
+			int topLeft = (gz * _VERTEX_COUNT) + gx;
+			int topRight = topLeft + 1;
+			int bottomLeft = ((gz + 1) * _VERTEX_COUNT) + gx;
+			int bottomRight = bottomLeft + 1;
+			indices[pointer++] = topLeft;
+			indices[pointer++] = bottomLeft;
+			indices[pointer++] = topRight;
+			indices[pointer++] = topRight;
+			indices[pointer++] = bottomLeft;
+			indices[pointer++] = bottomRight;
+		}
+	}
+	return p_loader.loadToVAO(vertices, textureCoords, normals, indices);
+}

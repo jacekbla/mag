@@ -1,0 +1,14 @@
+float Terrain::getHeight(int p_x, int p_z, 
+    stb::image & p_img)
+{
+	if (p_x < 0 || p_x >= p_img.height() || 
+            p_z < 0 || p_z >= p_img.height())
+	{
+		return 0.0f;
+	}
+	float height = p_img.get_rgb(p_x, p_z);
+	height -= _MAX_PIXEL_COLOR / 2.0f;
+	height /= _MAX_PIXEL_COLOR / 2.0f;
+	height *= _MAX_HEIGHT;
+	return height;
+}

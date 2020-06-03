@@ -1,0 +1,21 @@
+for (int i = 0; i < entities_lod0.size(); i++)
+{
+    float dist = glm::distance(entities_lod0[i].
+        getPosition(), camera->getPosition());
+    if (dist < lod0_dist)
+    {
+    	entities.push_back(entities_lod0[i]);
+    }
+    else if (dist < lod1_dist)
+    {
+    	entities.push_back(entities_lod1[i]);
+    }
+    else if (dist < lod2_dist)
+    {
+    	entities.push_back(entities_lod2[i]);
+    }
+    else if (dist < lod3_dist)
+    {
+    	entities.push_back(entities_lod3[i]);
+    }
+}

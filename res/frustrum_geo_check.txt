@@ -1,0 +1,16 @@
+bool outside = false;
+for (int i = 0; i < 6; i++)
+{
+	float distance = glm::dot(
+            _planes[i].second, 
+            sphere.first - _planes[i].first);
+	if (distance < -sphere.second)
+	{
+		outside = true;
+		break;
+	}
+}
+if (!outside)
+{
+	inside.push_back(entity);
+}

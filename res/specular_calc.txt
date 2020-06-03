@@ -1,0 +1,32 @@
+//jednostkowy wektor skierowany w stronę kamery
+vec3 unitVectorToCamera = 
+    normalize(vToCameraVector);
+
+//odwrócenie zwrotu wektora
+vec3 lightDirection = -unitToLightVector;
+
+//wyliczenie kierunku światła odbitego
+vec3 reflectedLightDirection = 
+    reflect(lightDirection, unitNormal);
+
+//iloczyn skalarny wektora światła odbitego
+//i wektora skierowanego w stronę kamery
+float specularFactor = 
+    dot(reflectedLightDirection, 
+    unitVectorToCamera);
+
+//zamiana ujemnych wartości na 0
+specularFactor = max(specularFactor, 0.0);
+
+//czynnik tłumienia światła
+float dampedFactor = pow(specularFactor, 
+    fShineDamper);
+
+//złożenie światła zwierciadlanego
+vec3 finalSpecular = dampedFactor * 
+    fReflectivity * vLightColor;
+
+//nałożenie na teksturę i światło rozproszone
+vColor = vec4(diffuse, 1.0) * 
+    texture(textureSampler, vTexCoordsFrag) + 
+    vec4(finalSpecular, 1.0);  
