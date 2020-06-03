@@ -937,12 +937,12 @@ Oświetlenie sceny składa się z~trzech składników:
         \captionof{figure}{Zależność nasycenia światła i~obrotu względem źródła światła}
         \label{fig:diffuse}
     \end{figure}
-    Jak widać na rysunku \ref{fig:diffuse_vectors} stopień nachylenia powierzchni w~stronę źródła światła można zdefiniować za pomocą iloczynu skalarnego dwóch wektorów:
+    Jak widać na rysunku \ref{fig:diffuse}b stopień nachylenia powierzchni w~stronę źródła światła można zdefiniować za pomocą iloczynu skalarnego dwóch wektorów:
     \begin{itemize}
-        \item normalnej w~danym punkcie,
+        \item wektora normalnego w~danym punkcie,
         \item wektora zwróconego z~danego punktu w~stronę źródła światła.
     \end{itemize}
-    Ujemne wartości iloczynu skalarnego zostają zmienione na 0. Otrzymaną w~ten sposób liczbę z~zakresu [0, 1] pozostaje już tylko przemnożyć przez kolor tekstury w~danym punkcie. Większość procesu odbywa się w~jednostce cieniującej fragmentów, której uproszczony do opisanego stanu kod został przedstawiony poniżej (\ref{diffuse-frag}).
+    Ujemne wartości iloczynu skalarnego zostają zmienione na 0. Otrzymaną w~ten sposób liczbę z~zakresu [0, 1] pozostaje już tylko przemnożyć przez kolor tekstury w~danym punkcie. Większość procesu odbywa się w~jednostce cieniującej fragmentów, której uproszczony do opisanego stanu kod został przedstawiony na listingu \ref{diffuse-frag}.
     
     \lstinputlisting[language=c++, caption=Jednostka cieniująca światła rozproszonego, label=diffuse-frag]{res/diffuse_frag.txt}
     
@@ -1056,7 +1056,7 @@ Każdy wierzchołek siatki terenu zawiera takie same elementy jak każdy inny ob
     \label{fig:terrain_grid}
 \end{figure}
 
-Generacja terenu polega na utworzeniu czterech tablic, zawierających wyżej wymienione atrybuty oraz tablice indeksów wierzchołków tworzących trójkąty. Program przechodzi po każdym wierzchołku i~oblicza potrzebne parametry na podstawie zmiennych podstawowych, takich jak: rozmiar, liczba wierzchołków, maksymalna i~minimalna wysokość oraz map wysokości i~map mieszania. Iteracja odbywa się dwukrotnie, za drugim razem wypełniana zostaje tablica indeksów, a~za pierwszym pozostałe parametry. %Całkowity proces generacji terenu obrazuje listing \ref{terrain-gen}. 
+Generacja terenu polega na utworzeniu czterech tablic, zawierających wyżej wymienione atrybuty oraz tablicy indeksów wierzchołków tworzących trójkąty. Program przechodzi po każdym wierzchołku i~oblicza potrzebne parametry na podstawie zmiennych podstawowych, takich jak: rozmiar, liczba wierzchołków, maksymalna i~minimalna wysokość oraz map wysokości i~map mieszania. Iteracja odbywa się dwukrotnie, za drugim razem wypełniana zostaje tablica indeksów, a~za pierwszym pozostałe parametry. %Całkowity proces generacji terenu obrazuje listing \ref{terrain-gen}. 
 
 %\lstinputlisting[language=c++, caption=Proces generacji terenu, label=terrain-gen]{res/terrain_gen.txt}
 
@@ -1068,7 +1068,7 @@ Po utworzeniu wszystkich potrzebnych tablic, zostają one wczytane do VAO, skąd
 
 \vspace{\baselineskip}
 \textbf{$\bullet$ Mapa wysokości} \\
-Do ustalenia wysokości terenu w~danym punkty wykorzystywana jest mapa wysokości. Przyjmuje formę obrazu rastrowego w~skali szarości, zapisanego w~formacie \texttt{.png}. Każdy piksel przechowuje wartości, na podstawie których wyliczona zostaje wysokość na scenie. Im wyższa ta wartość (jaśniejszy piksel) tym wyżej znajduje się dany obszar. W~pracy wykorzystywane są mapy wysokości o~wymiarach 256 x 256 pikseli, co daje możliwość zapisu 65536 różnych wartości wysokości. Rysunek \ref{fig:terrain_heightexample} przedstawia efekt zastosowania tej metody.
+Do ustalenia wysokości terenu w~danym punkty wykorzystywana jest mapa wysokości. Przyjmuje formę obrazu rastrowego w~skali szarości, zapisanego w~formacie \texttt{.png}. Każdy piksel przechowuje wartości, na podstawie których wyliczona zostaje wysokość na scenie. Im wyższa ta wartość (jaśniejszy piksel) tym wyżej znajduje się dany obszar. W~podstawowej wersji aplikacji badawczej wykorzystywane są mapy wysokości o~wymiarach 256 x 256 pikseli, co daje możliwość zapisu 65536 różnych wartości wysokości. Rysunek \ref{fig:terrain_heightexample} przedstawia efekt zastosowania tej metody.
 
 \begin{figure}[H]
     \centering
@@ -1092,14 +1092,14 @@ Do ustalenia wysokości terenu w~danym punkty wykorzystywana jest mapa wysokośc
 
 Wartość koloru piksela nie może być ujemna i~może osiągać bardzo duże liczby, co byłoby problematyczna przy budowie sceny. Wyznaczenie pożądanej wysokości zostało zrealizowane poprzez zdefiniowanie stałej maksymalnej wartości i~uzależnienie od niej zakresu dostępnych danych. To przekształcenie zostało zilustrowane na rysunku \ref{fig:terrain_heighttransform} oraz listingu \ref{terrain-getheight}.
 
+\lstinputlisting[language=c++, caption=Obliczenie wysokości terenu w~punkcie, label=terrain-getheight]{res/terrain_getheight.txt}
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=1.2\textwidth]{res/terrain_heighttransform.png}
     \caption{Przekształcenie koloru piksela na wartość wysokości}
     \label{fig:terrain_heighttransform}
 \end{figure}
-
-\lstinputlisting[language=c++, caption=Obliczenie wysokości terenu w~punkcie, label=terrain-getheight]{res/terrain_getheight.txt}
 
 
 \vspace{\baselineskip}
@@ -1131,7 +1131,7 @@ Należy zwrócić uwagę na łagodne przejścia między poszczególnymi tekstura
 
 \subsubsection{Generacja panoramy sceny (ang. \ang{Skybox})}
 Metoda wykorzystana do utworzenia tła sceny sprowadza się do utworzenia dużego sześcianu, zaopatrzonego w~tekstury widoczne od środka. Środek obiektu wyznacza pozycja kamery. \\
-Do zapisu wymaganej tekstury użyta została struktura OpenGL - Sześcienna Mapa Tekstury (ang \ang{Texture Cube Map}). Obiekt podzielony jest na sześć sekcji, każda z~nich reprezentuje jedną ścianę kostki. Pozwala to zaoszczędzić miejsce - zamiast sześciu tekstur została wykorzystana tylko jedna. Rysunek \ref{fig:skybox_example} pokazuje grafiki składowe tekstury oraz efekt na scenie.
+Do zapisu wymaganej tekstury użyta została struktura OpenGL - Sześcienna Mapa Tekstury (ang. \ang{Texture Cube Map}). Obiekt podzielony jest na sześć sekcji, każda z~nich reprezentuje jedną ścianę kostki. Pozwala to zaoszczędzić miejsce - zamiast sześciu tekstur została wykorzystana tylko jedna. Rysunek \ref{fig:skybox_example} pokazuje grafiki składowe tekstury oraz efekt na scenie.
 
 \begin{figure}[H]
     \centering
@@ -1218,7 +1218,8 @@ W wyliczeniach pojawia się również zmienna \texttt{attFactor} zależna od \te
 Do swobodnego przemieszczania się po scenie zaimplementowana została podstawowa obsługa kamery, korzystająca z~klawiatury i~myszy. Funkcjonalność używa wielu funkcji pomocniczych biblioteki GLFW. W~ramach pracy kamera może:
 \begin{itemize}
     \item zmieniać swój kąt obrotu wokół trzech osi, zgodnie z~układem przestrzeni euklidesowej,
-    \item przemieszczać się w~dół, górę, lewo, prawo, przód, tył.
+    \item przemieszczać się w~dół, górę, lewo, prawo, przód, tył,
+    \item przyspieszyć w kierunku zwrotu kamery.
 \end{itemize}
 W ramach silnika nie została zaimplementowana obsługa kolizji, co wiąże się z~możliwością przejścia kamery przez tekstury sceny. \\
 Program umożliwia zmianę czułości ruchów poprzez odpowiednie stałe.
@@ -1226,9 +1227,9 @@ Program umożliwia zmianę czułości ruchów poprzez odpowiednie stałe.
 \section{Narzędzia zewnętrzne}
 Do konstrukcji scen, w~tym utworzenia modeli i~tekstur obiektów wykorzystane zostały następujące narzędzia zewnętrzne:
 \begin{itemize}
-    \item Blender 2.80 - pakiet do tworzenia treści 3D, który oferuje szeroki zakres niezbędnych narzędzi, w~tym modelowanie, renderowanie, animacja, edycja wideo, efekty wizualne, komponowanie, teksturowanie i~wiele rodzajów symulacji. Jest wieloplatformowy z~interfejsem graficznym opartym o~OpenGL. Można go dostosować za pomocą skryptów Python. Oprogramowanie jest na licencji otwartoźródłowej (ang. \ang{open source}), co oznacza, że korzystanie z~niego jest darmowe oraz użytkownik ma prawo do modyfikowania własnej kopii programu. \cite{bib:blender}
-    \item GIMP 2.10.8 - program GNU do manipulacji obrazami (ang. \ang{GNU Image Manipulation Program}), szerzej znany jako GIMP, jest programem przeznaczonym do tworzenia i~edycji obrazów bitmapowych. Oznacza to, że nadaje się zarówno do edycji zdjęć cyfrowych jak i~typowej grafiki internetowej. Często wykorzystywany jest również do tworzenia własnych obrazów. \\
-    Program jest darmowym oprogramowaniem na licencji otwartoźródłowej: nie trzeba za niego płacić, aby z~niego korzystać, a~kod źródłowy GIMP jest dostępny dla każdego, kto chce go zbadać, przyczyniać się do jego rozwoju, rozpowszechniać lub uczyć się z~niego. \cite{bib:gimp}
+    \item Blender 2.80 - pakiet do tworzenia grafik 3D, który oferuje szeroki zakres narzędzi, w~tym modelowanie, renderowanie, animacja, edycja wideo, efekty wizualne, komponowanie, teksturowanie i~wiele rodzajów symulacji. Jest wieloplatformowy i posiada interfejs graficzny oparty o~OpenGL. Można go dostosować za pomocą skryptów Python. Oprogramowanie jest na licencji otwartoźródłowej (ang. \ang{open source}), co oznacza, że korzystanie z~niego jest darmowe oraz użytkownik ma prawo do modyfikowania własnej kopii programu. \cite{bib:blender}
+    \item GIMP 2.10.8 (ang. \ang{GNU Image Manipulation Program}) - program GNU (ang. \ang{GNU Not Unix}) do manipulacji obrazami, jest programem przeznaczonym do tworzenia i~edycji obrazów bitmapowych. Oznacza to, że nadaje się zarówno do edycji zdjęć cyfrowych jak i~typowej grafiki komputerowej. Często wykorzystywany jest również do tworzenia własnych obrazów. \\
+    Program jest darmowym oprogramowaniem na licencji otwartoźródłowej: nie trzeba za niego płacić, aby z~niego korzystać, a~kod źródłowy jest dostępny dla każdego, kto chce go zbadać, przyczyniać się do jego rozwoju, rozpowszechniać lub uczyć się z~niego. \cite{bib:gimp}
 \end{itemize}
 
 \vbox{}
@@ -1256,14 +1257,14 @@ Do przeprowadzenia testów utworzone zostały dwie różne sceny podstawowe, prz
     \item Panorama - tło sceny - stały obraz, niewchodzący w~interakcję z~pozostałymi elementami.
 \end{itemize}
 Każdy z~tych elementów posiada własną jednostkę renderującą, zestaw jednostek cieniujących oraz struktury odpowiadające za ich obsługę. \\
-W ramach badań wstępnych stwierdzono, że testy dadzą bardziej miarodajne wyniki, gdy zostaną przeprowadzone na mniejszej liczbie scen. Pozwala to na pomiar wpływu metod optymalizacyjnych w~takim samym środowisku. Większa liczba scen teoretycznie pozwoliłaby na dokładniejsze zbadanie poszczególnych czynników pracy silnika, ale z~drugiej strony trudniejszym zadaniem stałoby się stwierdzenie czy zmiana wyników nastąpiła przez wpływ badanej metody czy przez zmianę środowiska badawczego. Niemniej jednak, w~celu ściślejszej analizy odrębnych technik zwiększających wydajność, wprowadzono warianty scen, które umożliwiają zmianę parametrów środowiskowych, przy jednoczesnym zachowaniu tych samych elementów otoczenia.
+W ramach badań wstępnych stwierdzono, że testy dadzą bardziej miarodajne wyniki, gdy zostaną przeprowadzone na mniejszej liczbie scen. Takie podejście pozwala na pomiar wpływu metod optymalizacyjnych w~takim samym środowisku. Większa liczba scen teoretycznie pozwoliłaby na dokładniejsze zbadanie poszczególnych czynników pracy silnika, ale z~drugiej strony trudniejszym zadaniem stałoby się stwierdzenie czy zmiana wyników nastąpiła przez wpływ badanej metody czy przez zmianę środowiska badawczego. Niemniej jednak, w~celu ściślejszej analizy odrębnych technik zwiększających wydajność, wprowadzono warianty scen, które umożliwiają zmianę parametrów środowiskowych, przy jednoczesnym zachowaniu tych samych elementów otoczenia.
 
 \subsection{Scena 1 - Krajobraz}
 Pierwsza scena ma odpowiadać scenerii naturalnej, imitującej w~pewnym stopniu naturalne środowisko. Wykorzystuje ona wszystkie dostępne grupy elementów sceny. Na płaszczyźnie, określonej przez 16 tafli terenu o~wymiarach 100 x 100 jednostek, losowo rozkładane są różne obiekty, takie jak: drzewa, trawy czy skały. Jeżeli teren zejdzie poniżej pewnego poziomu odkryta zostaje tafla wody. W~tle widać panoramę sceny w~formie sześciennej tekstury. Przykład sceny przedstawiono na rysunku \ref{fig:scene1_example}. \\
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth]{res/scene1_example.png}
+    \includegraphics[width=0.9\textwidth]{res/scene1_example.png}
     \caption{Przykład sceny krajobrazu}
     \label{fig:scene1_example}
 \end{figure}
@@ -1280,9 +1281,9 @@ Warianty tej sceny przewidują:
 
 Stałe pozostają:
 \begin{itemize}
-    \item liczba źródeł światła - 4,
-    \item wykorzystanie powierzchni i~jednostek renderujących wody - 1 duża tafla,
-    \item wykorzystanie powierzchni i~jednostek renderujących teren - 16 mniejszych powierzchni,
+    \item liczba źródeł światła = 4,
+    \item wykorzystanie powierzchni i~jednostek renderujących wody = 1 duża tafla,
+    \item wykorzystanie powierzchni i~jednostek renderujących teren = 16 mniejszych powierzchni,
     \item wykorzystanie panoramy sceny.
 \end{itemize}
 
@@ -1291,12 +1292,13 @@ Druga scena służy głównie do pracy z~dużą liczbą bytów. Wyznaczony zosta
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth]{res/scene2_example.png}
+    \includegraphics[width=0.9\textwidth]{res/scene2_example.png}
     \caption{Przykład sceny chmury obiektów}
     \label{fig:scene2_example}
 \end{figure}
 
 Scena pozwala na bardziej jednostkowe podejście. Możliwe jest wyizolowanie poszczególnego obiektu i~zbadanie każdego z~czynników jaki może wpływać na wydajność jego renderowania. Przykładami może być zmiana tekstury danego obiektu czy zmniejszenie liczby jego wierzchołków. \\
+
 Warianty tej sceny przewidują:
 \begin{itemize}
     \item modele obiektów o~mniej lub bardziej złożonej strukturze,
@@ -1305,12 +1307,13 @@ Warianty tej sceny przewidują:
 \end{itemize}
 
 \vbox{}
+\vbox{}
 
 Stałe pozostają:
 \begin{itemize}
-    \item liczba źródeł światła - 1,
-    \item wykorzystanie powierzchni i~jednostek renderujących wody - brak,
-    \item wykorzystanie powierzchni i~jednostek renderujących teren - brak,
+    \item liczba źródeł światła = 1,
+    \item wykorzystanie powierzchni i~jednostek renderujących wody = brak,
+    \item wykorzystanie powierzchni i~jednostek renderujących teren = brak,
     \item wykorzystanie panoramy sceny.
 \end{itemize}
 
@@ -1318,7 +1321,7 @@ Stałe pozostają:
 \label{section:benchamarks}
 Wartości zbierane w~testach, na podstawie których przeprowadzona została analiza wydajności to:
 \begin{itemize}
-    \item Liczba klatek na sekundę - częstotliwość, z~jaką na ekranie pojawiają się kolejne obrazy, jest uważana za szybkość renderowania. Jedna klatka wymaga wyrysowania i~obsługi wszystkich widocznych obiektów sceny. Bardziej dokładny pomiar można uzyskać, mierząc czas wielu klatek. Na potrzeby analizy z~każdego testu zebrano średnią, maksymalna i~minimalną liczbę klatek na sekundę.
+    \item Liczba klatek na sekundę - częstotliwość, z~jaką na ekranie pojawiają się kolejne obrazy, jest uważana za szybkość renderowania. Jedna klatka wymaga wyrysowania i~obsługi wszystkich widocznych obiektów sceny. Bardziej dokładny pomiar można uzyskać, mierząc czas wielu klatek. Na potrzeby analizy z~każdego testu dynamicznego zebrano średnią, maksymalna i~minimalną liczbę klatek na sekundę.
     \item Czas trwania jednej klatki - odwrotność liczby klatek na sekundę, która to nie zawsze jest najlepszym sposobem pomiaru wydajności, ponieważ jest to wartość zmieniająca się nieliniowo w~dziedzinie czasu. W~celu wyjaśnienia problemu przedstawiono dwa przykładowe przypadki:
     \begin{enumerate}[label=(\alph*)]
         \item Na scenę dodano kilka dużych obiektów i~liczba klatek na sekundę zmniejszyła się z~200 na 180. Odnotowano spadek o~20 jednostek, jednak sama ta wartość niewiele mówi, aby sprawdzić o~ile sekund wydłużona została obsługa klatki należy obliczyć czas jej trwania: \\
@@ -1335,8 +1338,8 @@ Wartości zbierane w~testach, na podstawie których przeprowadzona została anal
     \item Liczba trójkątów na sekundę - zejście na niższy poziom, ta miara może okazać się przydatna przy porównywaniu scen o~wielu nieskomplikowanych obiektach i~scen o~niewielu skomplikowanych obiektach, przyda się również przy badaniu poszczególnych metod zmieniających strukturę modelu.
     \item Liczba renderowanych obiektów - miara określająca ile obiektów na scenie jest aktualnie wyświetlanych i~co za tym idzie obsługiwanych przez potok graficzny. Metody odrzucania elementów powinny obniżać tę wartość.
     \item Liczba renderowanych trójkątów - wszystkie trójkąty wszystkich aktualnie renderowanych elementów, na podstawie tej wartości możliwe staje się nie tylko zbadanie metod manipulacji poziomem detali, ale również porównanie ich do technik odrzucania obiektów.
-    \item Obciążenie procesora - miara sprawdzająca etap pracy procesora w~potoku graficznym.
-    \item Obciążenie karty graficznej - miara sprawdzająca procent wykorzystania zasobów karty graficznej przez program. Ze względu na brak ograniczeń narzuconych na silnik w~testach zazwyczaj jedna z~wartości: obciążenie procesora lub karty graficznej osiąga maksymalną wartość 100\% (lub zbliżoną ze względu na inne procesy komputera).
+    \item Obciążenie procesora - miara sprawdzająca stan pracy procesora w~potoku graficznym.
+    \item Obciążenie karty graficznej - miara sprawdzająca procent wykorzystania zasobów karty graficznej przez program. Ze względu na brak ograniczeń narzuconych na silnik można się spodziewać, że w~testach zazwyczaj jedna z~wartości: obciążenie procesora lub karty graficznej osiągnie maksymalną wartość 100\% (lub zbliżoną ze względu na inne procesy komputera).
     \item Ilość zajmowanej pamięci - wartość sprawdza ile miejsca potrzebuje program, aby funkcjonować. Głównie wykorzystywana przy rozwoju metod i~aplikacji badawczej, w~celu sprawdzenia wycieków pamięci i~potencjalnych problemów z~rozmiarem danych. Ta miara, obciążenie procesora i~kraty graficznej to standardowe miary pozwalające sprawdzić wpływ aplikacji na sprzęt.
 \end{itemize}
 
@@ -1363,13 +1366,13 @@ Każda z~dwóch grup testów wykorzystuje nieco inne podzbiory wymienionych wart
         \item minimalny czas trwania klatki,
         \item średnia liczba wyświetlanych trójkątów,
         \item średnie czasy trwania dziesięciu kolejnych klatek, na ich podstawie wykreślony został wykres zmian czasu trwania klatek,
-        \item średnie liczby wyświetlanych trójkątów w~dziesięciu kolejnych klatkach, na ich podstawie wykreślony został wykres zmian liczby wyświetlanych trójkątów,
+        \item średnie liczby wyświetlanych trójkątów w~dziesięciu kolejnych klatkach, na ich podstawie wykreślony został wykres zmian liczby wyświetlanych trójkątów.
     \end{itemize}
 \end{itemize}
 
 \vbox{}
 
-W przypadku testów na wersji bazowej silnika, wykres liczby trójkątów jest stały - wartość ta nie zmienia się, ponieważ żadne prymitywy nie są odrzucane z~potoku graficznego. Dlatego w~zestawieniu wyników zostały one pominięte. Podobnie czas trwania klatki został przedstawiony tylko jako średnia w~przypadku badań prowadzonych na wariancie podstawowym.
+W przypadku testów na wersji bazowej silnika, wykres liczby trójkątów jest stały - wartość ta nie zmienia się, ponieważ żadne prymitywy nie są odrzucane z~potoku graficznego. Dlatego w~zestawieniu wyników zostały one pominięte. Podobnie czas trwania klatki został w~tej wersji aplikacji przedstawiony tylko jako wartość średnia.
 
 \section{Środowisko sprzętowe}
 Wszystkie testy zostały przeprowadzone na jednym komputerze, z~użyciem tych samych podzespołów oraz tego samego systemu operacyjnego. \\
@@ -1380,6 +1383,8 @@ Wszystkie testy zostały przeprowadzone na jednym komputerze, z~użyciem tych sa
     \item Procesor: Intel Core i5-4460 3.20GHz, 4 rdzenie, 4 procesory logiczne
     \item Pamięć RAM: Crucial DDR3, 8 GB, 1600MHz
 \end{itemize}
+
+\newpage
 
 \section{Wyniki}
 \label{section:wyniki}
@@ -1433,6 +1438,8 @@ Cechy szczególne: & standard \\
         \hline
     \end{tabular}
 \end{table}
+
+\newpage
 
 \subsubsection{Test 1.2}
 \begin{tabular}{|l||l|}
@@ -1488,11 +1495,13 @@ Cechy szczególne: & standard \\
     \item Liczba obsługiwanych prymitywów nie zmieniła się, ale dzięki wykorzystaniu metody tylko jedna strona trójkątów jest renderowana. Jednostka cieniująca wierzchołków dalej zajmuję się taką samą liczbą wierzchołków, jednak przy składaniu powierzchni trójkątów dalej w~potoku graficznym przechodzą tylko te o~zadanym skręcie.
     \item Jednostka cieniująca fragmentów została odciążona, obliczenia dotyczące modelu oświetlenia oraz te wyznaczające kolor danego fragmentu nie są wykonywane dla powierzchni odwróconych od środka bryły obiektu.
     \item Wyniki obydwu testów spisane w~tabelach \ref{tab:backface_test1} i~\ref{tab:backface_test2} prezentują się podobnie i~wskazują poprawę wydajności względem wersji bazowej aplikacji.
-    \item Należy pamiętać o~możliwych artefaktach przy obiektach opisanych bryłami otwartymi (rysunek \ref{fig:backface_culling_example1}).
+    \item Należy pamiętać o~możliwych artefaktach przy obiektach opisanych bryłami otwartymi (rysunek \ref{fig:backface_culling_example}b).
     \item Technika jest ograniczona - modele drzew i~traw na scenie mają wiele prymitywów, gdzie nie można wykorzystać tej techniki. Korzystają z~płaskich powierzchni dla liści oraz źdźbeł o~przezroczystych obszarach tekstury. Płaskie prymitywy powinny być obustronnie widoczne, ponieważ nie są składowymi bryły zamkniętej.
     \item Jak widać w~tabelach  \ref{tab:backface_test1} i~\ref{tab:backface_test2} karta graficzna była stale wykorzystywana w~100\%. Taka wartość wskazuje na sprzętowe wąskie gardło.
     \item Obciążenie procesora oraz ilość zajmowanej pamięci w~teście 1.1 pozostają na podobnym w~miarę niskim poziomie, jednak w~teście 1.2 obciążenie procesora wzrosło. Może to być spowodowane zwiększeniem liczby wierzchołków, a~co za tym idzie danych przetwarzanych przez jednostkę centralną.
 \end{itemize}
+
+\newpage
 
 \subsection{Odrzucanie obszarów spoza bryły widoku}
 \subsubsection{Test 2.1}
@@ -1760,14 +1769,12 @@ Cechy szczególne: & standard \\
     \end{tabular}
 \end{table}
 
-\vbox{}
-
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}[trim axis left]
 \begin{axis}[
 scale only axis, % The height and width argument only apply to the actual axis
-height=4cm,
+height=3cm,
 width=0.9\textwidth,
 grid=both,
 max space between ticks=40, % To control the number of major ticks
@@ -1792,7 +1799,7 @@ ylabel={czas trwania klatki [ms]}
 \begin{tikzpicture}[trim axis left]
 \begin{axis}[
 scale only axis, % The height and width argument only apply to the actual axis
-height=4cm,
+height=3cm,
 width=0.9\textwidth,
 grid=both,
 max space between ticks=40, % To control the number of major ticks
@@ -1815,8 +1822,6 @@ ylabel={liczba trójkątów w~klatce}
 \label{fig:dynamic_plot_frustrum4_met}
 \end{figure}
 
-\vbox{}
-
 \subsubsection{Test 2.5}
 \begin{tabular}{|l||l|}
 \hline
@@ -1828,8 +1833,6 @@ Cechy szczególne: & -inne obiekty o~mniejszej liczbie wierzchołków \\
 & -20000 obiektów (10 razy więcej) \\
 \hline
 \end{tabular}\\
-
-\vbox{}
 
 \begin{table}[H]
     \centering
@@ -1852,14 +1855,12 @@ Cechy szczególne: & -inne obiekty o~mniejszej liczbie wierzchołków \\
     \end{tabular}
 \end{table}
 
-\vbox{}
-
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}[trim axis left]
 \begin{axis}[
 scale only axis, % The height and width argument only apply to the actual axis
-height=4cm,
+height=3cm,
 width=0.9\textwidth,
 grid=both,
 max space between ticks=40, % To control the number of major ticks
@@ -1884,7 +1885,7 @@ ylabel={czas trwania klatki [ms]}
 \begin{tikzpicture}[trim axis left]
 \begin{axis}[
 scale only axis, % The height and width argument only apply to the actual axis
-height=4cm,
+height=3cm,
 width=0.9\textwidth,
 grid=both,
 max space between ticks=40, % To control the number of major ticks
@@ -1907,17 +1908,15 @@ ylabel={liczba trójkątów w~klatce}
 \label{fig:dynamic_plot_frustrum5_met}
 \end{figure}
 
-\vbox{}
-
 \subsubsection{Opracowanie wyników}
 \begin{itemize}
     \item Został wykonany tylko jeden test statyczny (tabela \ref{tab:frustrum_test1}). Metoda odrzucania elementów spoza bryły widoku uwzględnia położenie i~rotację kamery, dlatego większa część testów wykorzystała dynamiczny wariant eksperymentu.
     \item Test statyczny uwypuklił jedną ważną rzecz: obciążenie procesora było większe przy włączonej metodzie. To właśnie procesor zajmuje się wyliczaniem płaszczyzn tworzących bryłę widoku oraz stwierdza które obiekty się w~niej znajdują, a~które nie.
     \item Już na pierwszym teście, jak i~na każdym kolejnym, zauważyć można duży wzrost wydajności. Średni czas trwania klatki zazwyczaj jest dwukrotnie (lub więcej) niższy, gdy program korzysta z~badanej techniki. Uzasadnienie tego faktu można zauważyć przy analizie liczby wyświetlanych trójkątów na scenie. Na teście statycznym 1.1 silnik obsługuje ponad cztery razy mniej obiektów niż wariant bazowy. Na wykresach \ref{fig:dynamic_plot_frustrum2_met}, \ref{fig:dynamic_plot_frustrum3_met}, \ref{fig:dynamic_plot_frustrum4_met}, \ref{fig:dynamic_plot_frustrum5_met} widać zależność między czasem trwania klatki a~liczbą renderowanych trójkątów. Redukcja liczby obsługiwanych trójkątów silnie obniża wartości czasu trwania klatki.
-    \item Z~tabel \ref{tab:frustrum_test4} i~\ref{tab:frustrum_test5} wynika, że w~tych testach metoda radziła sobie jeszcze lepiej niż w~pozostały. Wynika to z~faktu, że te testy zostały przeprowadzone na scenie 2, która to nie wykorzystuje jednostek renderujących wodę oraz teren.
+    \item Z~tabel \ref{tab:frustrum_test4} i~\ref{tab:frustrum_test5} wynika, że w~tych testach metoda radziła sobie jeszcze lepiej niż w~pozostały. Wynika to z~faktu, że te testy zostały przeprowadzone na scenie 2, która to nie wykorzystuje jednostek renderujących wody oraz terenu.
     \item Porównując testy dynamiczne na scenie 1 (tabele \ref{tab:frustrum_test2}, \ref{tab:frustrum_test3}) zauważyć można jedynie małe różnice: zmniejszenie czasu trwania klatki na korzyść metody odrzucania obiektów spoza bryły widoku jest niemal identyczne. Można na tej podstawie wywnioskować, że zarówno metoda jak i~wersja podstawowa silnika radzi sobie bardzo podobnie z~mniejszą liczbą bardziej skomplikowanych obiektów i~z~większą liczbą mniej skomplikowanych obiektów (zakładając, że liczba wierzchołków pozostaje podobna).
     \item Z~wykresów \ref{fig:dynamic_plot_frustrum2_met}, \ref{fig:dynamic_plot_frustrum3_met}, \ref{fig:dynamic_plot_frustrum4_met}, \ref{fig:dynamic_plot_frustrum5_met} widać, że liczba trójkątów cały czas się zmienia, bryła widoku wciąż jest zmieniana, inne obiekty zostają odrzucane, a~inne wyświetlane.
-    \item Maksymalny i~minimalny czas trwania klatki są niższe w~testach 1.4 i~1.5, ale w~tabeli \ref{tab:frustrum_test3} maksymalny czas trwania klatki jest wyższy, gdy wykorzystywana jest metoda odrzucania obiektów spoza bryły widoku, podobnie jest w~przypadku tabeli \ref{tab:frustrum_test2}, tam również czas minimalny jest gorszy niż w~wersji bazowej. Nie udało się dokładnie ustalić przyczyny tych rozbieżności, ale podejrzewa się, że może mieć to związek z~dużą liczbą obiektów o~bardzo wielu wierzchołkach, dla takich elementów trudniej wyznaczyć sfery ograniczające, a~co za tym idzie sprawdzić czy leżą wewnątrz bryły widoku. Może to był wąskie gardło procesora.
+    \item Maksymalny i~minimalny czas trwania klatki są niższe w~testach 1.4 i~1.5, ale w~tabeli \ref{tab:frustrum_test3} maksymalny czas trwania klatki jest wyższy, gdy wykorzystywana jest metoda odrzucania obiektów spoza bryły widoku, podobnie jest w~przypadku tabeli \ref{tab:frustrum_test2}, tam również czas minimalny jest gorszy niż w~wersji bazowej. Nie udało się dokładnie ustalić przyczyny tych rozbieżności, ale podejrzewa się, że może mieć to związek z~dużą liczbą obiektów o~bardzo wielu wierzchołkach, dla takich elementów trudniej wyznaczyć sfery ograniczające, a~co za tym idzie sprawdzić czy leżą wewnątrz bryły widoku. Może to prowadzić do powstania wąskiego gardła procesora.
     \item W~testach 1.4 i~1.5 z~użyciem metody poprawy wydajności czas trwania klatki w~niektórych miejscach osiągał wartości bliskie zeru. W~tym czasie kamera wyświetlała bardzo małą liczbę obiektów lub w~ogóle ich nie wyświetla, ponieważ nie znajdują się w~bryle widoku.
 \end{itemize}
 
@@ -1973,8 +1972,6 @@ Cechy szczególne: & standard \\
     \end{tabular}
 \end{table}
 
-\vbox{}
-
 \subsubsection{Test 3.2}
 \begin{tabular}{|l||l|}
 \hline
@@ -1985,8 +1982,6 @@ Typ testu: & dynamiczny \\
 Cechy szczególne: & standard \\
 \hline
 \end{tabular}\\
-
-\vbox{}
 
 \begin{table}[H]
     \centering
@@ -2016,7 +2011,7 @@ Cechy szczególne: & standard \\
 \begin{tikzpicture}[trim axis left]
 \begin{axis}[
 scale only axis, % The height and width argument only apply to the actual axis
-height=4cm,
+height=3cm,
 width=0.9\textwidth,
 grid=both,
 max space between ticks=40, % To control the number of major ticks
@@ -2031,8 +2026,6 @@ ylabel={czas trwania klatki [ms]}
 
 \addplot table[mark=none, x index=0, y index=1] {res/plots/dynamic_plot_lod2_met.txt};
 
-
-
 \end{axis}
 \end{tikzpicture}\\
 
@@ -2041,7 +2034,7 @@ ylabel={czas trwania klatki [ms]}
 \begin{tikzpicture}[trim axis left]
 \begin{axis}[
 scale only axis, % The height and width argument only apply to the actual axis
-height=4cm,
+height=3cm,
 width=0.9\textwidth,
 grid=both,
 max space between ticks=40, % To control the number of major ticks
@@ -2064,8 +2057,6 @@ ylabel={liczba trójkątów w~klatce}
 \label{fig:dynamic_plot_lod2_met}
 \end{figure}
 
-\vbox{}
-
 \subsubsection{Test 3.3}
 \begin{tabular}{|l||l|}
 \hline
@@ -2076,8 +2067,6 @@ Typ testu: & dynamiczny \\
 Cechy szczególne: & inne obiekty o~mniejszej liczbie wierzchołków \\
 \hline
 \end{tabular}\\
-
-\vbox{}
 
 \begin{table}[H]
     \centering
@@ -2100,14 +2089,12 @@ Cechy szczególne: & inne obiekty o~mniejszej liczbie wierzchołków \\
     \end{tabular}
 \end{table}
 
-\vbox{}
-
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}[trim axis left]
 \begin{axis}[
 scale only axis, % The height and width argument only apply to the actual axis
-height=4cm,
+height=3cm,
 width=0.9\textwidth,
 grid=both,
 max space between ticks=40, % To control the number of major ticks
@@ -2132,7 +2119,7 @@ ylabel={czas trwania klatki [ms]}
 \begin{tikzpicture}[trim axis left]
 \begin{axis}[
 scale only axis, % The height and width argument only apply to the actual axis
-height=4cm,
+height=3cm,
 width=0.9\textwidth,
 grid=both,
 max space between ticks=40, % To control the number of major ticks
@@ -2155,8 +2142,6 @@ ylabel={liczba trójkątów w~klatce}
 \label{fig:dynamic_plot_lod3_met}
 \end{figure}
 
-\vbox{}
-
 \subsubsection{Test 3.4}
 \begin{tabular}{|l||l|}
 \hline
@@ -2167,8 +2152,6 @@ Typ testu: & dynamiczny \\
 Cechy szczególne: & standard \\
 \hline
 \end{tabular}\\
-
-\vbox{}
 
 \begin{table}[H]
     \centering
@@ -2191,14 +2174,12 @@ Cechy szczególne: & standard \\
     \end{tabular}
 \end{table}
 
-\vbox{}
-
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}[trim axis left]
 \begin{axis}[
 scale only axis, % The height and width argument only apply to the actual axis
-height=4cm,
+height=3cm,
 width=0.9\textwidth,
 grid=both,
 max space between ticks=40, % To control the number of major ticks
@@ -2223,7 +2204,7 @@ ylabel={czas trwania klatki [ms]}
 \begin{tikzpicture}[trim axis left]
 \begin{axis}[
 scale only axis, % The height and width argument only apply to the actual axis
-height=4cm,
+height=3cm,
 width=0.9\textwidth,
 grid=both,
 max space between ticks=40, % To control the number of major ticks
@@ -2246,8 +2227,6 @@ ylabel={liczba trójkątów w~klatce}
 \label{fig:dynamic_plot_lod4_met}
 \end{figure}
 
-\vbox{}
-
 \subsubsection{Test 3.5}
 \begin{tabular}{|l||l|}
 \hline
@@ -2258,8 +2237,6 @@ Typ testu: & dynamiczny \\
 Cechy szczególne: & inne obiekty o~mniejszej liczbie wierzchołków \\
 \hline
 \end{tabular}\\
-
-\vbox{}
 
 \begin{table}[H]
     \centering
@@ -2282,14 +2259,12 @@ Cechy szczególne: & inne obiekty o~mniejszej liczbie wierzchołków \\
     \end{tabular}
 \end{table}
 
-\vbox{}
-
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}[trim axis left]
 \begin{axis}[
 scale only axis, % The height and width argument only apply to the actual axis
-height=4cm,
+height=3cm,
 width=0.9\textwidth,
 grid=both,
 max space between ticks=40, % To control the number of major ticks
@@ -2314,7 +2289,7 @@ ylabel={czas trwania klatki [ms]}
 \begin{tikzpicture}[trim axis left]
 \begin{axis}[
 scale only axis, % The height and width argument only apply to the actual axis
-height=4cm,
+height=3cm,
 width=0.9\textwidth,
 grid=both,
 max space between ticks=40, % To control the number of major ticks
@@ -2336,9 +2311,6 @@ ylabel={liczba trójkątów w~klatce}
 \caption{Porównanie czasu trwania klatki i~liczby renderowanych trójkątów - manipulacja poziomem szczegółów}
 \label{fig:dynamic_plot_lod5_met}
 \end{figure}
-
-\vbox{}
-
 
 \subsubsection{Opracowanie wyników}
 \begin{itemize}
@@ -2403,8 +2375,6 @@ Cechy szczególne: & standard \\
     \end{tabular}
 \end{table}
 
-\vbox{}
-
 \subsubsection{Test 4.2}
 \begin{tabular}{|l||l|}
 \hline
@@ -2415,8 +2385,6 @@ Typ testu: & statyczny \\
 Cechy szczególne: & wiele obiektów o~niewielkiej liczbie wierzchołków \\
 \hline
 \end{tabular}\\
-
-\vbox{}
 
 \begin{table}[H]
     \centering
@@ -2453,8 +2421,6 @@ Cechy szczególne: & wiele obiektów o~niewielkiej liczbie wierzchołków \\
     \end{tabular}
 \end{table}
 
-\vbox{}
-
 \subsubsection{Test 4.3}
 \begin{tabular}{|l||l|}
 \hline
@@ -2466,8 +2432,6 @@ Cechy szczególne: & bardzo dużo obiektów o~bardzo \\
 & małej liczbie wierzchołków \\
 \hline
 \end{tabular}\\
-
-\vbox{}
 
 \begin{table}[H]
     \centering
@@ -2504,13 +2468,11 @@ Cechy szczególne: & bardzo dużo obiektów o~bardzo \\
     \end{tabular}
 \end{table}
 
-\vbox{}
-
 \subsubsection{Opracowanie wyników}
 \begin{itemize}
     \item Praca metody nie jest zależna od pozycji, ani od rotacji kamery, dlatego też analiza odbyła się tylko na scenach statycznych. Z~tego też względu liczba renderowanych obiektów oraz prymitywów nie zmienia się względem wersji podstawowej aplikacji.
     \item Instancjonowanie pozytywnie wpływa na wydajność silnika. W~każdym z~testów czas trwania klatki zmalał w~stosunku do wersji bazowej aplikacji. Testy skupiały się na dużej liczebności obiektów na scenie, przez co osiągane wartości liczby klatek na sekundę nie są wysokie, ale mimo to stopień poprawy jest widoczny poprzez czas trwania klatki.
-    \item Najmniejszy przyrost liczby klatek na sekundę został odnotowany w~teście 4.1 (tabela \ref{tab:instancing_test1}). Spowodowane jest to stosunkowo dużą różnorodnością elementów sceny 1. Znajdują się tam zarówno powierzchnie terenu, jak i~tafla wody oraz różnorakie obiekty. Renderowanie instancyjne bardziej odnajduje zastosowanie przy dużej liczbie tych samych elementów.
+    \item Pomimo pozytywnych wyników spodziewano się większego wpływu renderowania instancyjnego na potok graficzny. Najmniejszy przyrost liczby klatek na sekundę został odnotowany w~teście 4.1 (tabela \ref{tab:instancing_test1}). Spowodowane jest to stosunkowo dużą różnorodnością elementów sceny 1. Znajdują się tam zarówno powierzchnie terenu, jak i~tafla wody oraz różnorakie obiekty. Renderowanie instancyjne bardziej odnajduje zastosowanie przy dużej liczbie tych samych elementów.
     \item Na podstawie tabel \ref{tab:instancing_test2} oraz \ref{tab:instancing_test3} można wysnuć następujący wniosek: w~miarę zwiększania liczby obiektów oraz zmniejszania liczby ich wierzchołków zysk wydajnościowy wydaje się coraz większy.
     \item Jednak w~miarę zmniejszania liczby wierzchołków renderowanych obiektów można zauważyć jeszcze jedną ciekawą rzecz. Mianowicie karta graficzna przestaje pracować na poziomie 100\%, a~ilość zajmowanej pamięci rośnie. Możliwe, że w~ostatni teście 4.3 (tabela \ref{tab:instancing_test3}) osiągnięty został limit danych, które jednostki cieniujące są w~stanie przetworzyć przez co spowolniony zostaje przesył danych z~procesora do karty graficznej. Sytuacja ta występuje zarówno przy korzystaniu z~metody renderowania instancyjnego oraz nawet w~większym stopniu w~wersji bazowej silnika.
 \end{itemize}
@@ -2633,7 +2595,7 @@ ylabel={czas trwania klatki [ms]}
 \label{fig:dynamic_plot_mip2_met}
 \end{figure}
 
-\vbox{}
+\newpage
 
 \subsubsection{Test 5.3 - Mipmapping}
 \begin{tabular}{|l||l|}
@@ -2701,7 +2663,7 @@ ylabel={czas trwania klatki [ms]}
 \label{fig:dynamic_plot_mip3_met}
 \end{figure}
 
-\vbox{}
+\newpage
 
 \subsubsection{Test 6.1 - Filtrowanie anizotropowe}
 \begin{tabular}{|l||l|}
@@ -2713,8 +2675,6 @@ Typ testu: & dynamiczny \\
 Cechy szczególne: & standard \\
 \hline
 \end{tabular}\\
-
-\vbox{}
 
 \begin{table}[H]
     \centering
@@ -2737,14 +2697,12 @@ Cechy szczególne: & standard \\
     \end{tabular}
 \end{table}
 
-\vbox{}
-
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}[trim axis left]
 \begin{axis}[
 scale only axis, % The height and width argument only apply to the actual axis
-height=4cm,
+height=3cm,
 width=0.9\textwidth,
 grid=both,
 max space between ticks=40, % To control the number of major ticks
@@ -2759,8 +2717,6 @@ ylabel={czas trwania klatki [ms]}
 
 \addplot table[mark=none, x index=0, y index=1] {res/plots/dynamic_plot_ani1_4.txt};
 
-
-
 \end{axis}
 \end{tikzpicture}
 
@@ -2768,14 +2724,12 @@ ylabel={czas trwania klatki [ms]}
 \label{fig:dynamic_plot_ani1_4}
 \end{figure}
 
-\vbox{}
-
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}[trim axis left]
 \begin{axis}[
 scale only axis, % The height and width argument only apply to the actual axis
-height=4cm,
+height=3cm,
 width=0.9\textwidth,
 grid=both,
 max space between ticks=40, % To control the number of major ticks
@@ -2790,18 +2744,12 @@ ylabel={czas trwania klatki [ms]}
 
 \addplot table[mark=none, x index=0, y index=1] {res/plots/dynamic_plot_ani1_16.txt};
 
-
-
 \end{axis}
 \end{tikzpicture}\\
-
-\vbox{}
 
 \caption{Czas trwania klatki - filtrowanie anizotropowe x16}
 \label{fig:dynamic_plot_ani1_16}
 \end{figure}
-
-\vbox{}
 
 \subsubsection{Test 6.2 - Filtrowanie anizotropowe}
 \begin{tabular}{|l||l|}
@@ -2813,8 +2761,6 @@ Typ testu: & statyczny \\
 Cechy szczególne: & standard \\
 \hline
 \end{tabular}\\
-
-\vbox{}
 
 \begin{table}[H]
     \centering
@@ -2851,18 +2797,16 @@ Cechy szczególne: & standard \\
     \end{tabular}
 \end{table}
 
-\vbox{}
-
 \subsubsection{Opracowanie wyników}
 \begin{itemize}
     \item Zarówno mipmapping, jak i~filtrowanie anizotropowe nie zawsze poprawiają wydajność systemu.
-    \item Jeżeli chodzi o~mipmapping to wyniki są bardzo zbliżone to tych z~wersji bazowej. W~teście 5.1 (tabela \ref{tab:mipmapping_test1}) wariant korzystający z~tej techniki sprawdza się lepiej o~1.65 ms w~czasie trwania ramki. Jednak w~testach 5.2 oraz 5.3 (tabele \ref{tab:mip_test2}, \ref{tab:mip_test3}) wersja bazowa osiąga lepsze wyniki. Spowodowane jest to prawdopodobnie trybem przeprowadzonych testów: test 5.1 jest statyczny, a~testy 5.2 i~5.3 dynamiczne. OpenGL w~trakcie ruchu na bieżąco przelicza i~dopasowuje odpowiednie rozmiary tekstur w~ramach mechanizmu mipmappingu. Te dodatkowe obliczenia wpływają na wydajność.
-    \item Nawet w~przypadku dużej rozdzielczości tekstur renderowanych obiektów wariant bazowy jest w~stanie osiągać lepsze wyniki - tabela \ref{tab:mip_test3}.
     \item Liczba renderowanych obiektów i~trójkątów jest stała zarówno w~wariancie bazowym silnika, jak i~tym, wykorzystującym mipmapping lub filtrowanie anizotropowe. Te metody nie mają wpływu na wymienione parametry. Z~tego też powodu ich wykresy nie zostały przedstawione w~pracy.
+    \item Jeżeli chodzi o~mipmapping to wyniki są bardzo zbliżone to tych z~wersji bazowej. W~teście 5.1 (tabela \ref{tab:mipmapping_test1}) wariant korzystający z~tej techniki sprawdza się lepiej o~1.65 ms w~czasie trwania ramki. Jednak w~testach 5.2 oraz 5.3 (tabele \ref{tab:mip_test2}, \ref{tab:mip_test3}) wersja bazowa osiąga lepsze wyniki. Spowodowane jest to prawdopodobnie trybem przeprowadzonych testów: test 5.1 jest statyczny, a~testy 5.2 i~5.3 dynamiczne. OpenGL na bieżąco przelicza i~dopasowuje odpowiednie rozmiary tekstur w~ramach mechanizmu mipmappingu. Te dodatkowe obliczenia wpływają na wydajność.
+    \item Nawet w~przypadku dużej rozdzielczości tekstur renderowanych obiektów wariant bazowy jest w~stanie osiągać lepsze wyniki - tabela \ref{tab:mip_test3}.
     \item Wykres \ref{fig:dynamic_plot_mip2_met} kształtem podobnie jak kilka wcześniej omawianych wykresów z~testów dynamicznych na scenie 1 (\ref{fig:dynamic_plot_lod3_met}, \ref{fig:dynamic_plot_frustrum5_met}) posiada dwa wypiętrzenia w~trakcie swojego przebiegu, nie są tak ostre jak w~pozostałych przypadkach, ale ich przyczyna jest podobna. W~tych miejscach kamera musiała znajdować się w~miejscu dużego zagęszczenia obiektów, co spowodowało potrzebę zwiększenia nakładu pracy silnika, powodując tym samym wzrost czasu trwania klatki.
     \item W~przypadku filtrowania anizotropowego wyniki podzielone zostały dodatkowo na próbkowanie x4 i~x16. To drugie, jak należało się spodziewać, powoduje spadek wydajności względem dwóch pozostałych oraz mipmappingu w~teście statycznym oraz dynamicznym (tabele \ref{tab:ni_test2}, \ref{tab:ani_test1}). Obliczenia potrzebne na właściwą obsługę takiego filtrowania wymagają stosunkowo dużych zasobów. Za to próbkowanie x4 daje zadowalające rezultaty. Różnice są niewielkie, ale jednak czas trwania klatki w~obu testach był niższy niż wersja bazowa programu. Co ciekawe wartości minimalnego oraz maksymalnego czasu trwania klatki są gorsze w~przypadku wariantu wykorzystującego filtrowanie anizotropowe.
     \item Wykresy porównawcze próbkowania x4 oraz x16 (\ref{fig:dynamic_plot_ani1_4}, \ref{fig:dynamic_plot_ani1_16}) są zbliżone kształtem, ale próbkowanie x16 przebiega bardziej w~sposób bardziej chaotyczny, posiada różne odchylenia i~nagłe skoki wartości.
-    \item Jak opisane zostało w~rozdziale \ref{chapter:analiza} te dwie metody nie zawsze są w~stanie zapewnić poprawę wydajności, przeprowadzone testy potwierdzają to stanowisko.
+    \item Jak opisane zostało w~rozdziale \ref{chapter:analiza} te dwie metody nie zawsze są w~stanie zapewnić poprawę wydajności, przeprowadzone testy potwierdzają to stwierdzenie.
 \end{itemize}
 
 
@@ -2877,8 +2821,6 @@ Typ testu: & statyczny \\
 Cechy szczególne: & standard \\
 \hline
 \end{tabular}\\
-
-\vbox{}
 
 \begin{table}[H]
     \centering
@@ -2915,8 +2857,6 @@ Cechy szczególne: & standard \\
     \end{tabular}
 \end{table}
 
-\vbox{}
-
 \subsubsection{Test 7.2}
 \begin{tabular}{|l||l|}
 \hline
@@ -2927,8 +2867,6 @@ Typ testu: & dynamiczny \\
 Cechy szczególne: & standard \\
 \hline
 \end{tabular}\\
-
-\vbox{}
 
 \begin{table}[H]
     \centering
@@ -2950,8 +2888,6 @@ Cechy szczególne: & standard \\
         \hline
     \end{tabular}
 \end{table}
-
-\vbox{}
 
 \begin{figure}[H]
 \centering
@@ -3104,12 +3040,14 @@ ylabel={liczba trójkątów w~klatce}
 
 \subsubsection{Opracowanie wyników}
 \begin{itemize}
-    \item Wyniki przedstawione w~tabelach \ref{tab:all_test1}, \ref{tab:all_test2}, \ref{tab:all_test3} oraz na wykresach \ref{fig:dynamic_plot_all2_met} i~\ref{fig:dynamic_plot_all3_met} stanowią zwieńczenie pracy i~prezentują maksymalną poziom wydajności osiągalny w~ramach aplikacji badawczej.
-    \item Wartość prawie każdego parametru w~każdym teście została mocno poprawiona w~wyniku zastosowania metod. W~teście 7.3 (tabela \ref{tab:all_test3}), w~ramach którego przedstawione zostały największe rozbieżności pomiędzy wersjami silnika, czas trwania klatki został zmniejszony o~285.86 ms, co 95.27\% wartości osiągniętej bez wykorzystania żadnej z~metod.
+    \item Wyniki przedstawione w~tabelach \ref{tab:all_test1}, \ref{tab:all_test2}, \ref{tab:all_test3} oraz na wykresach \ref{fig:dynamic_plot_all2_met} i~\ref{fig:dynamic_plot_all3_met} stanowią zwieńczenie pracy i~prezentują maksymalny poziom wydajności jaki jest możliwy do osiągnięcia w~ramach aplikacji badawczej.
+    \item Wartość prawie każdego parametru w~każdym teście została mocno poprawiona w~wyniku zastosowania metod. W~teście 7.3 (tabela \ref{tab:all_test3}), w~ramach którego przedstawione zostały największe rozbieżności pomiędzy wersjami silnika, czas trwania klatki został zmniejszony o~285.86 ms, co stanowi 95.27\% wartości osiągniętej bez wykorzystania żadnej z~metod.
     \item Jedynym parametrem przemawiającym na korzyść wariantu bazowego jest obciążenie procesora w~teście statycznym na scenie 1 (test 7.1 - tabela \ref{tab:all_test1}). Metody poprawiające wydajność w~celu poprawnego funkcjonowania potrzebują większych zasobów procesora do obliczenia niezbędnych parametrów.
-    \item Minimalna wartość czasu trwania klatki w~teście 7.3, dla wariantu używającego wszystkich metod, jest bliska zeru, ze względu na ruch kamery po scenie, odrzucanie obiektów spoza bryły widoku oraz optymalizację tym elementów, które pozostają w~potoku graficznym. Tę zależność obrazują wykresy \ref{fig:dynamic_plot_all2_met} i~\ref{fig:dynamic_plot_all3_met}.
+    \item Minimalna wartość czasu trwania klatki w~teście 7.3, dla wariantu używającego wszystkich metod, jest bliska zeru, ze względu na ruch kamery po scenie, który wpływa na odrzucanie obiektów spoza bryły widoku oraz optymalizację tych elementów, które pozostają w~potoku graficznym. Te zależności obrazują wykresy \ref{fig:dynamic_plot_all2_met} i~\ref{fig:dynamic_plot_all3_met}.
     \item Z~tabel prezentujących wyniki (\ref{tab:all_test1}, \ref{tab:all_test2}, \ref{tab:all_test3}) można wyłuskać wpływy poszczególnych metod na ogół pracy silnika. Na przykład zmieniająca się, za sprawą odrzucania obiektów spoza bryły widoku i~manipulacji poziomem detali, liczba obsługiwanych trójkątów na wykresach \ref{fig:dynamic_plot_all2_met} i~\ref{fig:dynamic_plot_all3_met} lub poprawiona obsługa dużych ilości obiektów w~teście 7.3, dzięki renderowaniu instancyjnemu.
 \end{itemize}
+
+\newpage
 
 \subsection{Wnioski ogólne}
 \begin{itemize}
@@ -3117,7 +3055,7 @@ ylabel={liczba trójkątów w~klatce}
     \item Mipmapping oraz filtrowanie anizotropowe (zwłaszcza przy wyższych wartościach próbkowania) mogą negatywnie wpłynąć na sprawność programu.
     \item Niektóre metody są zależne od pozycji i~rotacji kamery na scenie, są to: odrzucanie obiektów spoza bryły widoku, manipulacja poziomem szczegółowości oraz mipmapping i~filtrowanie anizotropowe.
     \item Krótszy czas trwania czasem wiąże się z~większym obciążeniem innych części potoku graficznego, na przykład odrzucanie obiektów spoza bryły widoku.
-    \item Renderowanie instancyjne poprawia wydajność silnika przy dużej liczbie obiektów o~małej liczbie wierzchołków.
+    \item Renderowanie instancyjne poprawia wydajność silnika przy dużej liczbie obiektów o~małej liczbie wierzchołków w mniejszym stopniu, niż początkowo zakładano.
     \item Jeżeli na scenie renderowanych jest dużo obiektów o~odpowiednio małej liczbie wierzchołków obciążenie pamięci lub mechanizmów przesyłu danych może uniemożliwić wykorzystanie pełnej mocy zasobów procesora i~karty graficznej.
     \item Czas trwania klatki jest zazwyczaj proporcjonalny do liczby renderowanych trójkątów.
     \item Metody, które przynoszą największe korzyści wydajnościowych, to manipulacja poziomem detali oraz odrzucanie obiektów spoza bryły widoku.
@@ -3126,8 +3064,8 @@ ylabel={liczba trójkątów w~klatce}
     \item W~zdecydowanej większości testów to kartka graficzna stanowiła ograniczenie sprzętowe, była wykorzystywana w~100\%.
     \item Wykresy liczby trójkątów w~klatce oraz czasu trwania klatki dobrze ilustrują przebieg testów dynamicznych. Można na ich podstawie wywnioskować jakie akcje podejmowała kamera w~danych klatkach.
     \item Podejście testów dynamicznych trwających skończoną liczbę klatek, a~nie sekund, pozwoliło na przebadanie metod w~tych samych warunkach.
-    \item Podejście małej liczby scen z~wieloma wariantami sprawdziło się dla zestawu testów wykonanych w~ramach tej pracy.
-    \item Połączenie wszystkich metod daje bardzo dobre rezultaty, w~ramach pracy tych technik czas trwania klatki jest w~stanie zmniejszyć się o~ponad 95\%.
+    \item Podejście małej liczby scen z~wieloma wariantami sprawdziło się dla zestawu testów wykonanych w~ramach tej pracy i dało zadowalające wyniki.
+    \item Połączenie wszystkich metod daje bardzo dobre rezultaty, w~ramach pracy tych technik czas trwania klatki może zostać zredukowany o~nawet 95\%.
 \end{itemize}
 
 
@@ -3135,18 +3073,18 @@ ylabel={liczba trójkątów w~klatce}
 \chapter{Podsumowanie}
 
 W ramach niniejszej pracy przeprowadzona została analiza optymalizacji sprawności w~środowisku graficznym. Pojęcie wydajności zostało gruntownie przebadane z~pomocą literatury naukowej. Podjęto również temat pomiaru i~wskaźników pomiarowych skuteczności oprogramowania renderującego. \\
-Następnie przedstawione zostały wybrane metody poprawy wydajności silnika graficznego. Wybór technik uzasadniono i~przedstawiono alternatywy i~inne sposoby implementacji wspomnianych systemów. Przy selekcji brany pod uwagę był etap potoku graficznego, na który wpływa dana metoda, jej popularność w~środowisku naukowym, sposób jej implementacji oraz potencjalne korzyści wydajnościowe. \\
+Następnie przedstawione zostały wybrane metody poprawy wydajności silnika graficznego. Wybór technik uzasadniono i~przedstawiono alternatywy i~inne sposoby implementacji wspomnianych systemów. Przy selekcji brany pod uwagę był etap potoku graficznego, na który wpływa dana metoda, jej popularność w~środowiskach naukowych, sposób jej implementacji oraz potencjalne korzyści wydajnościowe. \\
 Po tych przygotowaniach przystąpiono do konstrukcji środowiska badawczego. Zaprojektowana, zaimplementowana i~opisana została aplikacja badawcza, pozwalająca na przegląd pracy silnika graficznego oraz wygenerowanie scen, w~ramach których zostały przeprowadzone testy. Program do analizy podzielono na część bazową - nie zawierającą żadnych metod poprawy wydajności oraz część, w~której te systemy funkcjonują zgodnie z~przeznaczeniem. Techniki można w~zależności od potrzeb włączyć lub wyłączyć. Aplikacja badawcza wykorzystuje wiele mechanizmów i~efektów, znajdujących zastosowanie w~profesjonalnych programach graficznych. \\
-Zaprojektowane zostały sceny i~ich warianty oraz wyznaczone wskaźniki wydajności. Następnie na ich podstawie przeprowadzono testy, badające różne aspekty pracy silnika graficznego oraz analizowanych metod. Wyniki zostały przedstawione w~tabelach oraz wykresach, po czym podjęto próby ich przestudiowania. Wnioski i~owoce tej analizy spisano w~tej sekcji \ref{section:wyniki}.
+Zaprojektowane zostały sceny i~ich warianty oraz wyznaczono wskaźniki wydajności. Następnie na ich podstawie przeprowadzono testy, badające różne aspekty pracy silnika graficznego oraz analizowanych metod. Wyniki zostały przedstawione w~tabelach oraz wykresach, po czym podjęto próby ich przestudiowania. Wnioski i~owoce tej analizy spisano w~tej sekcji \ref{section:wyniki}.
 
 \vbox{}
 
-Cel pracy został zrealizowany - wpływ metod, które bez uszczerbku na jakości generowanego obrazu, były w~stanie znacznie poprawić wydajność silnika graficznego, zostały dokładnie przeanalizowane i~przetestowane. W~trakcie prac zaznajomiono się również ze szczegółami implementacyjnymi aplikacji renderujących.
+Cel pracy został zrealizowany - wpływ metod, które bez uszczerbku na jakości generowanego obrazu, były w~stanie znacznie poprawić wydajność silnika graficznego, został dokładnie przeanalizowany i~przetestowany. W~trakcie prac zaznajomiono się również ze szczegółami teoretycznymi i implementacyjnymi aplikacji renderujących.
 
 \section{Kierunki dalszego rozwoju}
 \begin{itemize}
     \item Analiza innych metod poprawy wydajności.
-    \item Porównanie tych samych metod i~testów na graficznym interfejsie programowania aplikacji innym niż OpenGL.
+    \item Porównanie tych samych metod i~testów opartych na graficznym interfejsie programowania aplikacji innym niż OpenGL.
     \item Rozbudowa scen aplikacji badawczej.
     \item Rozbudowa bazowej wersji silnika graficznego.
     \item Porównanie aktualnych wersji technik poprawy wydajności z~innymi podejściami do tych samych metod.
